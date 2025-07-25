@@ -1,0 +1,182 @@
+/* main.css - estilos visuais da NUI */
+
+body {
+  background: transparent;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+}
+
+#lightBox {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  background: rgba(20, 20, 20, 0.85);
+  padding: 25px 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+#trafficSvg {
+  width: 90px;
+  height: 90px;
+}
+
+#greenLight {
+  filter: drop-shadow(0 0 30px #2ecc71);
+  transition: filter 0.02s ease-in-out;
+}
+#yellowLight {
+  filter: drop-shadow(0 0 20px #f1c40f);
+  transition: filter 0.02s ease-in-out;
+}
+#redLight {
+  filter: drop-shadow(0 0 10px #e74c3c);
+  transition: filter 0.02s ease-in-out;
+}
+#lightText {
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+
+#resultBox {
+  display: none;
+  position: absolute;
+  bottom: 60px;
+  background: rgba(10, 10, 10, 0.85);
+  padding: 35px 60px;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+#resultBox h1 {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+}
+
+#resultBox p {
+  font-size: 1.3rem;
+}
+
+#rankingBox {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 20px 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+  display: none;
+  color: white;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+#rankingBox h2 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#rankingBox ul {
+  list-style: none;
+}
+
+#rankingBox li {
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes pulse {
+  0% { filter: brightness(1) drop-shadow(0 0 8px #fff); }
+  50% { filter: brightness(2) drop-shadow(0 0 32px #fff); }
+  100% { filter: brightness(1) drop-shadow(0 0 8px #fff); }
+}
+.glow-red {
+  animation: pulse 0.7s infinite;
+  filter: drop-shadow(0 0 16px #ff4d4d) drop-shadow(0 0 32px #ff4d4d);
+}
+.glow-yellow {
+  animation: pulse 0.7s infinite;
+  filter: drop-shadow(0 0 16px #ffe066) drop-shadow(0 0 32px #ffe066);
+}
+.glow-green {
+  animation: pulse 0.7s infinite;
+  filter: drop-shadow(0 0 16px #32ff7e) drop-shadow(0 0 32px #32ff7e);
+}
+.neon-text {
+  text-shadow: 0 0 8px #fff, 0 0 16px #fff, 0 0 32px #fff;
+  letter-spacing: 2px;
+  transition: text-shadow 0.2s;
+}
+#countdown {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px #ffe066, 0 0 32px #ffe066;
+  animation: pulse 1s infinite;
+  color: #ffe066;
+  user-select: none;
+}
+
+/* Estilos para o painel de histórico, recordes e conquistas */
+#historyBox {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(20, 20, 20, 0.95);
+  color: #fff;
+  border-radius: 18px;
+  box-shadow: 0 0 40px #000a;
+  padding: 32px 48px;
+  min-width: 340px;
+  z-index: 1000;
+}
+
+#historyBox h2 {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+#historyList, #recordsList, #achievementsList {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 18px;
+}
+
+#historyList li, #recordsList li, #achievementsList li {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+#closeHistory {
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #ff7675;
+  transition: color 0.2s;
+}
+
+#closeHistory:hover {
+  color: #ff4d4d;
+}

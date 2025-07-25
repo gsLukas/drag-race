@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>qb-drag UI</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <div id="lightBox">
+    <svg id="trafficSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+      <ellipse id="greenLight" class="neon-green" fill="#0f7035" stroke="#003a73" stroke-width="0"
+        transform="translate(198.5185, 299.2593)" rx="51.1111" ry="48.8888" />
+      <ellipse id="yellowLight" class="neon-yellow" fill="#ab8c25" stroke="#003a73" stroke-width="0"
+        transform="translate(200, 182.9629)" rx="51.1111" ry="48.8888" />
+      <ellipse id="redLight" class="neon-red" fill="#8b0b28" stroke="#003a73" stroke-width="0"
+        transform="translate(200, 67.4073)" rx="51.1111" ry="48.8888" />
+    </svg>
+    <div id="countdown" style="display:none;"></div>
+    <div id="lightText" class="neon-text">AGUARDE</div>
+  </div>
+  <div id="resultBox">
+    <h1 id="resultTitle">Resultado</h1>
+    <p id="resultTime">Tempo: 0.00s</p>
+  </div>
+  <div id="rankingBox">
+    <h2>🏁 Seu Ranking</h2>
+    <ul id="rankingList"></ul>
+  </div>
+  <div id="historyBox" style="display:none;">
+    <h2>Histórico de Corridas</h2>
+    <ul id="historyList"></ul>
+    <h3>Recordes Pessoais</h3>
+    <ul id="recordsList"></ul>
+    <h3>Conquistas</h3>
+    <ul id="achievementsList"></ul>
+    <button onclick="closeHistory()">Fechar</button>
+  </div>
+  <audio id="beep" src="sounds/beep.mp3"></audio>
+  <audio id="buzzer" src="sounds/buzzer.mp3"></audio>
+  <audio id="start" src="sounds/start.mp3"></audio>
+  <script src="main.js"></script>
+</body>
+
+</html>
