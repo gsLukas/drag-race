@@ -21,7 +21,7 @@ Este recurso para FiveM implementa corridas de arrancada (drag race) para servid
 - `config.lua`: configurações do recurso
 
 ## Créditos
-Desenvolvido por gsLukas.
+Desenvolvido por gsLukas && Pikolin0.
 
 ## Licença
 Consulte o arquivo LICENSE para detalhes.
