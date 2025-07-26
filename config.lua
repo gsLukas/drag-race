@@ -6,23 +6,16 @@ Config.Locations = {
     Disputa = { pos = vector3(1545.59, 3217.69, 40.45), heading = 85.0 },
 }
 
+
+
+
+
+
 -- Bloco: Linha de chegada (área ampla)
 Config.FinishLinePoints = {
-    vector3(1191.58, 3126.17, 40.49),
-    vector3(1190.32, 3121.35, 40.47),
-    vector3(1189.06, 3116.53, 40.45),
-    vector3(1187.80, 3111.71, 40.43),
-    vector3(1193.20, 3123.76, 40.48),
-    vector3(1194.02, 3115.91, 40.41),
-    vector3(1195.28, 3111.09, 40.39),
-    vector3(1192.78, 3120.73, 40.43),
-    vector3(1193.54, 3116.89, 40.41),
-    vector3(1194.75, 3112.67, 40.41),    
-    vector3(1196.01, 3107.85, 40.39),
-    vector3(1197.25, 3102.99, 40.37),
-    vector3(1198.49, 3098.13, 40.35),
-    vector3(1199.73, 3093.27, 40.33),
-    vector3(1200.97, 3088.41, 40.31),
+    vector3(1151.44, 3098.92, 39.44), -- P1
+    vector3(1149.28, 3107.58, 39.44), -- P2
+    vector3(1153.79, 3089.54, 39.44), -- P3
 }
 
 -- Bloco: Posições de largada nomeadas
@@ -90,7 +83,7 @@ Config.LevelXP = {
     [5] = 1500, -- Nível máximo com 1500 XP
 }
 
--- Definições de customizações que são liberadas conforme o nível do jogador
+
 Config.CustomizacoesPorNivel = {
     [1] = {  -- Nível 1
         visual = {"portas", "retrovisores"},  -- Customizações visuais

@@ -121,3 +121,11 @@ exports("AddXP_Treino", AddXP_Treino)
 exports("AddXP_Disputa", AddXP_Disputa)
 exports("AddXP_Vitoria", AddXP_Vitoria)
 
+RegisterNetEvent('qb-race:showLeaderboard', function(list)
+    -- Exibe leaderboard visual via NUI (painel apenas, sem notificação)
+    SendNUIMessage({
+        leaderboard = true,
+        data = list
+    })
+end)
+

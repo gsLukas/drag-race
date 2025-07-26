@@ -221,13 +221,32 @@ end)
 
 RegisterNetEvent('qb-race:getLeaderboard', function()
     local src = source
-    exports.oxmysql:execute('SELECT player_name, MIN(time) as time FROM race_results GROUP BY citizenid ORDER BY time ASC LIMIT 3', {}, function(result)
-        local list = {}
-        for i, row in ipairs(result) do
-            table.insert(list, { name = row.player_name, time = tonumber(row.time) })
+    -- Melhores tempos de disputa
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    local citizenid = Player.PlayerData.citizenid
+    exports.oxmysql:execute(
+        [[SELECT player_name, MIN(time) as best_time FROM race_results WHERE mode = 'disputa' AND burned = 0 GROUP BY citizenid ORDER BY best_time ASC LIMIT 3]],
+        {},
+        function(disputa)
+            -- Últimos tempos de treino do jogador atual
+            exports.oxmysql:execute(
+                [[SELECT player_name, time, track, date FROM race_results WHERE mode = 'treino' AND burned = 0 AND citizenid = ? ORDER BY date DESC, time ASC LIMIT 2]],
+                {citizenid},
+                function(treino)
+                    -- Melhor tempo pessoal (personalBest)
+                    exports.oxmysql:execute(
+                        [[SELECT MIN(time) as personalBest FROM race_results WHERE citizenid = ? AND burned = 0]],
+                        {citizenid},
+                        function(bestResult)
+                            local personalBest = bestResult and bestResult[1] and bestResult[1].personalBest or nil
+                            TriggerClientEvent('qb-race:showLeaderboard', src, { disputa = disputa, treino = treino, personalBest = personalBest })
+                        end
+                    )
+                end
+            )
         end
-        TriggerClientEvent('qb-race:showLeaderboard', src, list)
-    end)
+    )
 end)
 
 -- Histórico de corridas do jogador

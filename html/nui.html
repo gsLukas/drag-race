@@ -24,9 +24,25 @@
     <h1 id="resultTitle">Resultado</h1>
     <p id="resultTime">Tempo: 0.00s</p>
   </div>
+
   <div id="rankingBox">
-    <h2>🏁 Seu Ranking</h2>
-    <ul id="rankingList"></ul>
+    <div class="ranking-popup">
+      <div class="personal-best"><b>Melhor Tempo:</b> <span id="personalBest">--</span></div>
+      <h2 class="ranking-title">🏁 Rank Disputa</h2>
+      <ul id="rankingList" class="ranking-list"></ul>
+    </div>
+  </div>
+
+  <div id="rankingBox">
+    <div class="ranking-popup">
+      <div class="personal-best"><b>Meu Melhor Tempo Geral:</b> <span id="personalBest">--</span></div>
+      <div class="last-trainings">
+        <b>Últimos 2 tempos Treino:</b>
+        <ul id="lastTrainingsList" class="ranking-list"></ul>
+      </div>
+      <h2 class="ranking-title">🏁 Rank Disputa</h2>
+      <ul id="rankingList" class="ranking-list"></ul>
+    </div>
   </div>
   <div id="historyBox" style="display:none;">
     <h2>Histórico de Corridas</h2>

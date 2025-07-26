@@ -239,7 +239,10 @@ end)
             TriggerServerEvent('qb-race:logResult', {
                 track = trackId or "default",
                 time = time,
-                venceu = not burnedStart -- true se não queimou, false se queimou
+                venceu = not burnedStart, -- true se não queimou, false se queimou
+                tipoCorrida = "disputa",
+                mode = "disputa",
+                burned = burnedStart and 1 or 0
             })
             if not burnedStart then
                 -- Só ganha XP se cruzar a linha de chegada sem queimar
@@ -252,10 +255,29 @@ end)
             Wait(5000)
             SendNUIMessage({ reset = true })
         else
-            -- Modo treino: apenas mostra resultado e reseta UI
-            -- Só ganha XP se cruzar a linha de chegada sem queimar
+            -- Modo treino: registra resultado e mostra na UI
+            TriggerServerEvent('qb-race:logResult', {
+                track = trackId or "default",
+                time = time,
+                venceu = not burnedStart,
+                tipoCorrida = "treino",
+                mode = "treino",
+                burned = burnedStart and 1 or 0
+            })
             if not burnedStart then
                 AddXP_Treino()
+                -- Salva últimos 2 tempos de treino
+                local trainings = GetResourceKvpString("lastTrainings") or ""
+                local list = {}
+                for t in string.gmatch(trainings, "[%d%.]+") do
+                    table.insert(list, tonumber(t))
+                end
+                table.insert(list, 1, tonumber(time))
+                if #list > 2 then
+                    while #list > 2 do table.remove(list) end
+                end
+                local saveStr = table.concat(list, ",")
+                SetResourceKvp("lastTrainings", saveStr)
             end
             Wait(5000)
             SendNUIMessage({ reset = true })
@@ -458,17 +480,20 @@ end
 
 
     RegisterNetEvent('qb-race:showLeaderboard', function(list)
-        -- Exibe leaderboard visual via NUI
-        SendNUIMessage({
-            leaderboard = true,
-            data = list
-        })
-        -- Opcional: também notifica texto
-        local text = 'TOP 3 TEMPOS:\n'
-        for i, v in ipairs(list) do
-            text = text .. string.format('%d. %s - %.2fs\n', i, v.name, v.time)
+        -- Exibe ranking: melhor tempo geral, últimos 2 tempos treino (só do jogador), ranking disputa (todos)
+        local leaderboardData = list or {}
+        -- Ajusta para garantir que só os 2 mais recentes de treino sejam enviados ao NUI
+        leaderboardData.lastTrainings = {}
+        if leaderboardData.treino and type(leaderboardData.treino) == "table" then
+            for i = 1, math.min(2, #leaderboardData.treino) do
+                table.insert(leaderboardData.lastTrainings, leaderboardData.treino[i])
+            end
         end
-        QBCore.Functions.Notify(text, 'primary', 8000)
+        -- Garante que o campo personalBest é processado e enviado ao NUI
+        leaderboardData.personalBest = leaderboardData.personalBest or nil
+        SendNUIMessage({
+            leaderboard = leaderboardData
+        })
     end)
 
     -- =====================
@@ -562,7 +587,7 @@ end
         return false
     end
 
-    -- Solicita histórico de corridas
+    -- Comando para solicitar histórico de corridas
 RegisterCommand("meuhistorico", function()
     TriggerServerEvent("qb-race:getRaceHistory")
 end)

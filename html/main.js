@@ -7,7 +7,8 @@ window.addEventListener('message', function (event) {
   const resultTitle = document.getElementById("resultTitle");
   const resultTime = document.getElementById("resultTime");
   const rankingBox = document.getElementById("rankingBox");
-  const rankingList = document.getElementById("rankingList");
+  const rankingDisputa = document.getElementById("rankingDisputa");
+  const rankingTreino = document.getElementById("rankingTreino");
   const countdown = document.getElementById("countdown");
   const historyBox = document.getElementById("historyBox");
   const historyList = document.getElementById("historyList");
@@ -45,10 +46,7 @@ window.addEventListener('message', function (event) {
     if (!data.burned) {
       if (personalBest === null || data.time < personalBest) personalBest = data.time;
       if (typeof data.personalBest === 'number') personalBest = data.personalBest;
-      rankingList.innerHTML = `
-        <li><strong>Melhor tempo:</strong> ${personalBest.toFixed(2)}s</li>
-        <li><strong>Último tempo:</strong> ${data.time.toFixed(2)}s</li>
-      `;
+      // rankingList removido
       rankingBox.style.display = "block";
       setTimeout(() => { rankingBox.style.display = "none"; }, 10000);
     }
@@ -66,28 +64,52 @@ window.addEventListener('message', function (event) {
     updateLight("red");
   }
 
-  // Painel de histórico, recordes e conquistas
-  if (data.showHistory && Array.isArray(data.history)) {
-    historyBox.style.display = "block";
-    historyList.innerHTML = data.history.length ? data.history.map(c => `<li>${c.track} - <b>${Number(c.time).toFixed(2)}s</b> em ${c.date} ${c.venceu == 1 ? '🏆' : ''}</li>`).join('') : '<li>Nenhuma corrida registrada.</li>';
-  }
-  if (data.showRecords && Array.isArray(data.records)) {
-    recordsList.innerHTML = data.records.length ? data.records.map(r => `<li>${r.track}: <b>${Number(r.best_time).toFixed(2)}s</b></li>`).join('') : '<li>Nenhum recorde registrado.</li>';
-  }
-  if (data.showAchievements) {
-    let ach = '';
-    if (data.weeklyBest && data.weeklyBest.best_time) {
-      ach += `<li>Melhor tempo da semana: <b>${data.weeklyBest.best_time.toFixed(2)}s</b> (${data.weeklyBest.track})</li>`;
+  // Painel de ranking separado
+  if (data.leaderboard && (data.leaderboard.disputa || data.leaderboard.treino)) {
+    rankingBox.style.display = "block";
+    rankingBox.classList.add("fade-in");
+    // Exibe melhor tempo geral do jogador
+    if (data.leaderboard.personalBest !== undefined && data.leaderboard.personalBest !== null) {
+      document.getElementById('personalBest').innerText = Number(data.leaderboard.personalBest).toFixed(2) + 's';
+    } else {
+      document.getElementById('personalBest').innerText = '--';
     }
-    if (typeof data.winStreak === 'number') {
-      ach += `<li>Sequência de vitórias: <b>${data.winStreak}</b></li>`;
+    const disputa = data.leaderboard.disputa || [];
+    let html = '';
+    if (disputa.length) {
+      html += disputa.map((v, i) => `<li>${i+1}. <b>${v.player_name}</b> - ${Number(v.best_time).toFixed(2)}s</li>`).join('');
     }
-    achievementsList.innerHTML = ach || '<li>Nenhuma conquista registrada.</li>';
+    if (!html) html = '<li>Nenhum tempo registrado.</li>';
+    document.getElementById('rankingList').innerHTML = html;
+    setTimeout(() => {
+      rankingBox.style.display = 'none';
+      rankingBox.classList.remove("fade-in");
+    }, 8000);
+    // Exibe últimos 2 tempos de treino do jogador
+    const lastTrainingsList = document.getElementById('lastTrainingsList');
+    lastTrainingsList.innerHTML = '';
+    if (Array.isArray(data.leaderboard.lastTrainings) && data.leaderboard.lastTrainings.length > 0) {
+      lastTrainingsList.innerHTML = data.leaderboard.lastTrainings.map((t, i) => {
+        if (t && typeof t.time === 'number') {
+          let info = `${t.time.toFixed(2)}s`;
+          if (t.track) info += ` <span style='color:#aaa;font-size:0.9em;'>(${t.track})</span>`;
+          if (t.date) info += ` <span style='color:#aaa;font-size:0.8em;'>${new Date(t.date).toLocaleDateString()}</span>`;
+          return `<li>${i+1}. ${info}</li>`;
+        } else {
+          return `<li>${i+1}. --</li>`;
+        }
+      }).join('');
+    } else {
+      lastTrainingsList.innerHTML = '<li>--</li>';
+    }
   }
+// ...existing code...
 });
 
+// Função para fechar histórico (mantida se usar histórico)
 function closeHistory() {
-  document.getElementById('historyBox').style.display = 'none';
+  const el = document.getElementById('historyBox');
+  if (el) el.style.display = 'none';
 }
 
 // Funções utilitárias (devem ser movidas do HTML para cá)

@@ -3,7 +3,7 @@ game 'gta5'
 
 description 'qb-race - Corrida de arrancada (drag race) + Sistema de XP e Customizações'
 author 'Grupo Sales, pikolin0 & gsLukao'
-version '1.0.0'
+version '2.7.1'
 
 dependency 'qb-core'
 
@@ -12,7 +12,8 @@ shared_script 'config.lua'
 client_scripts {
     'client.lua',
     'client/main.lua',
-    'client/mods.lua'
+    'client/mods.lua',
+    'npc.lua'
 }
 
 server_scripts {

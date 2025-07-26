@@ -60,3 +60,9 @@ WHERE burned = 0
 GROUP BY citizenid
 ORDER BY best_time ASC
 LIMIT 3;
+
+SELECT player_name, time, track, date
+FROM race_results
+WHERE burned = 0
+ORDER BY date DESC, time ASC
+LIMIT 10;
