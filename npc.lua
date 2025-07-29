@@ -1,4 +1,3 @@
--- Função utilitária para gerar posições baseadas na referência real de prop
 local function normalizeHeading(h)
     h = h % 360
     if h < 0 then h = h + 360 end
@@ -33,15 +32,12 @@ function generateBleacherNPCPositions(baseCoords, baseHeading)
                 baseCoords.y + rotatedY,
                 baseCoords.z + (o.z - 1.7)
             ),
-            heading = normalizeHeading(baseHeading + (o.h - 13.93) + 180) -- gira 180 graus
+            heading = normalizeHeading(baseHeading + (o.h - 13.93) + 180)
         })
     end
 
     return positions
 end
-
--- Lista de modelos variados (homens e mulheres)
-
 local npcModels = {
     "a_m_y_stbla_01", "a_m_y_stwhi_02", "a_m_y_vinewood_01", "a_m_m_skater_01",
     "a_f_m_bevhills_01", "a_f_m_fatbla_01", "a_f_y_tourist_01", "a_f_y_hipster_01",
@@ -50,7 +46,7 @@ local npcModels = {
 }
 
 local spawnedNpcs = {}
-local npcDistance = 40.0 -- distância máxima para spawn/despawn
+local npcDistance = 40.0 --[[Configura a distancia do plaeyer para fazer o despawn dos NPC (leveza)]]
 
 local torcidaPositions = {
     vector4(1594.47, 3205.9, 41.2, 31.6),
@@ -118,16 +114,7 @@ local torcidaPositions = {
     vector4(1582.37, 3203.69, 40.99, 5.28),
     vector4(1583.18, 3203.93, 40.99, 3.48),
     vector4(1583.99, 3204.17, 40.99 , 1.68),
-
-    
-
-
-
-
-
-
     -- ARQ 2
-
     vector4(1559.21, 3227.51, 41.2, 199.68),
     vector4(1559.55, 3226.69, 41.0, 207.3),
     vector4(1559.83, 3225.96, 40.85, 198.85),
@@ -162,8 +149,6 @@ local torcidaPositions = {
     vector4(1573.34, 3230.37, 40.98, 197.84),
     vector4(1572.86, 3230.24, 41.0, 195.43),
     vector4(1573.08, 3229.42, 40.77, 195.42),
-
-    
     vector4(1585.56, 3234.14, 41.21, 188.86),
     vector4(1584.16, 3233.76, 41.21, 186.09),
     vector4(1584.27, 3232.99, 41.04, 193.81),
@@ -175,8 +160,6 @@ local torcidaPositions = {
     vector4(1583.66, 3232.82, 41.0, 193.1), 
     vector4(1583.05, 3232.55, 41.0, 194.59),
     vector4(1582.44, 3232.28, 41.0, 196.08),
-    
-
 }
 
 function LoadModel(model)
@@ -193,7 +176,7 @@ function SpawnTorcidaNPC(index, data)
     if spawnedNpcs[index] and DoesEntityExist(spawnedNpcs[index]) then return end
     local npcModel = npcModels[((index - 1) % #npcModels) + 1]
     LoadModel(npcModel)
-    local zAdjusted = data.z - 1.0 -- ajuste para descer o NPC
+    local zAdjusted = data.z - 1.0
     local npc = CreatePed(4, GetHashKey(npcModel), data.x, data.y, zAdjusted, data.w, false, true)
     SetEntityInvincible(npc, true)
     FreezeEntityPosition(npc, true)
@@ -207,8 +190,6 @@ function DeleteTorcidaNPC(index)
         spawnedNpcs[index] = nil
     end
 end
-
--- Thread otimizada: só spawna/despawna conforme distância do jogador
 Citizen.CreateThread(function()
     while true do
         local playerCoords = GetEntityCoords(PlayerPedId())
@@ -221,6 +202,6 @@ Citizen.CreateThread(function()
                 DeleteTorcidaNPC(i)
             end
         end
-        Wait(2000) -- ajustável para performance
+        Wait(2000)
     end
 end)
