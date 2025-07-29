@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local activeDisputes = {}
-local activeTrainings = {}  -- [playerId] = true
+local activeTrainings = {}
 local lastResultTime = {}
 
 function GetPlayerLevel(xp)
@@ -36,8 +36,6 @@ function DarXP(playerId, tipoCorrida, venceu)
         TriggerClientEvent('QBCore:Notify', playerId, ('Você ganhou %d XP de corrida!'):format(add), 'success')
     end
 end
-
--- Jogador desafia outro
 RegisterCommand('desafiar', function(source, args, raw)
     local src = source
     local target = tonumber(args[1])
@@ -56,8 +54,6 @@ RegisterCommand('desafiar', function(source, args, raw)
     TriggerClientEvent('qb-race:receiveChallenge', target, src)
     TriggerClientEvent('QBCore:Notify', src, 'Convite enviado!', 'success')
 end, false)
-
--- Jogador aceita desafio
 RegisterNetEvent('qb-race:acceptChallenge', function(fromId)
     local src = source
     if activeDisputes[src] or activeDisputes[fromId] then
@@ -67,15 +63,13 @@ RegisterNetEvent('qb-race:acceptChallenge', function(fromId)
     activeDisputes[src] = true
     activeDisputes[fromId] = true
     local timestamp = os.time()
-    -- Envia nomes dos oponentes
     TriggerClientEvent('qb-race:setOpponents', src, { GetPlayerName(fromId) })
     TriggerClientEvent('qb-race:setOpponents', fromId, { GetPlayerName(src) })
-    -- Inicia corrida para ambos
-    TriggerClientEvent('qb-race:startRace', src, timestamp, trackId, 1) -- desafiante slot 1
-    TriggerClientEvent('qb-race:startRace', fromId, timestamp, trackId, 2) -- desafiado slot 2
+    TriggerClientEvent('qb-race:startRace', src, timestamp, trackId, 1) 
+    TriggerClientEvent('qb-race:startRace', fromId, timestamp, trackId, 2) 
 end)
 
--- Jogador inicia treino solo
+
 RegisterNetEvent('qb-race:startSolo', function(trackId)
     local src = source
     if activeDisputes[src] then
@@ -85,8 +79,6 @@ RegisterNetEvent('qb-race:startSolo', function(trackId)
     activeTrainings[src] = true
     TriggerClientEvent('qb-race:startSolo', src, trackId)
 end)
-
--- Jogador sai da corrida ou desconecta
 RegisterNetEvent('qb-race:leaveQueue', function()
     local src = source
     activeDisputes[src] = nil
@@ -97,8 +89,6 @@ AddEventHandler('playerDropped', function()
     activeDisputes[src] = nil
     activeTrainings[src] = nil
 end)
-
--- Registrar o resultado da corrida no banco
 RegisterNetEvent('qb-race:logResult', function(data)
     local src = source
     local now = os.time()
@@ -107,16 +97,12 @@ RegisterNetEvent('qb-race:logResult', function(data)
         return
     end
     lastResultTime[src] = now
-
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
-
-    -- Validação extra
     if not activeDisputes[src] and not activeTrainings[src] then
         print("[qb-drag][ERRO] Jogador tentou registrar resultado sem estar em corrida:", src)
         return
     end
-
     local citizenid = Player.PlayerData.citizenid
     local charinfo = Player.PlayerData.charinfo
     if type(charinfo) == "string" then
@@ -128,12 +114,10 @@ RegisterNetEvent('qb-race:logResult', function(data)
     local track = data.track or "desconhecida"
     local time = tonumber(data.time)
     local date = os.date('%Y-%m-%d %H:%M:%S')
-
     if not time or time < 0.1 or time > 600 then
         print("Resultado inválido recebido do jogador " .. src)
         return
     end
-
     exports.oxmysql:insert(
         [[INSERT INTO race_results (citizenid, player_name, track, time, date, burned, mode, xp, level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]],
         { citizenid, name, track, time, date, data.burned or 0, data.mode or nil, Player.PlayerData.metadata["dragxp"] or 0, GetPlayerLevel(Player.PlayerData.metadata["dragxp"] or 0) },
@@ -145,20 +129,12 @@ RegisterNetEvent('qb-race:logResult', function(data)
             end
         end
     )
-
     DarXP(src, data.tipoCorrida or "disputa", data.venceu == true)
     activeDisputes[src] = nil
     activeTrainings[src] = nil
 
     TriggerClientEvent('qb-race:showRaceResult', src, data.venceu and "win" or "lose")
 end)
-
--- Sincroniza fogos para todos os jogadores
-RegisterNetEvent("qb-race:syncFireworks", function()
-    TriggerClientEvent("qb-race:fireworksAll", -1)
-end)
-
--- Ranking, histórico e conquistas
 RegisterNetEvent('qb-race:getLeaderboard', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
@@ -185,7 +161,6 @@ RegisterNetEvent('qb-race:getLeaderboard', function()
         end
     )
 end)
-
 RegisterNetEvent('qb-race:getRaceHistory', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
@@ -198,7 +173,6 @@ RegisterNetEvent('qb-race:getRaceHistory', function()
         TriggerClientEvent('qb-race:showPersonalRecords', src, records)
     end)
 end)
-
 RegisterNetEvent('qb-race:getRaceAchievements', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
@@ -212,4 +186,3 @@ RegisterNetEvent('qb-race:getRaceAchievements', function()
         TriggerClientEvent('qb-race:showWinStreak', src, streak[1] and streak[1].streak or 0)
     end)
 end)
-
