@@ -3,8 +3,8 @@
 
 [![FiveM QBCore](https://img.shields.io/badge/FiveM-QBCore-blueviolet?style=flat-square)](https://github.com/qbcore-framework)
 [![Versão](https://img.shields.io/badge/versão-2.7.1-green?style=flat-square)]()
-[![Licença](https://img.shields.io/github/license/seu-usuario/qb-drag?style=flat-square)]()
-[![Status](https://img.shields.io/badge/status-ativo-success?style=flat-square)]()
+[![Licença](https://img.shields.io/github/license/seu-usuario/qb-drag?style=flat-box)]()
+[![Status](https://img.shields.io/badge/status-ativo-success?style=flat-box)]()
 
 > Recurso de corridas de arrancada (_drag racing_) com sistema de XP e personalizações para servidores **QBCore**.
 
@@ -12,9 +12,6 @@
 
 ## 🎥 Demonstração
 
-![Preview do sistema de corrida](https://github.com/SEU_USUARIO/qb-drag/assets/0000000/preview.gif)
-
-*(Substitua o link acima pelo GIF real hospedado no GitHub ou no [Imgur](https://imgur.com/))*
 
 ---
 
