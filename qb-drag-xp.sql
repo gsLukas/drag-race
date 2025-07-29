@@ -6,11 +6,6 @@ CREATE TABLE IF NOT EXISTS `qb_drag_xp` (
     FOREIGN KEY (`citizenid`) REFERENCES players(`citizenid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Para sincronizar XP:
--- Salvar XP: INSERT INTO qb_drag_xp (citizenid, xp) VALUES (?, ?) ON DUPLICATE KEY UPDATE xp = ?;
--- Carregar XP: SELECT xp FROM qb_drag_xp WHERE citizenid = ?;
-
-
 CREATE TABLE IF NOT EXISTS `race_results` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `citizenid` VARCHAR(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -29,16 +24,12 @@ CREATE TABLE IF NOT EXISTS `race_results` (
     FOREIGN KEY (`citizenid`) REFERENCES players(`citizenid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exemplos de queries otimizadas para leaderboard:
-
--- Top 3 geral (melhor tempo de cada jogador)
 SELECT player_name, MIN(time) as best_time
 FROM race_results
 GROUP BY citizenid
 ORDER BY best_time ASC
 LIMIT 3;
 
--- Top 3 por modo (ex: apenas disputas)
 SELECT player_name, MIN(time) as best_time
 FROM race_results
 WHERE mode = 'disputa'
@@ -46,7 +37,6 @@ GROUP BY citizenid
 ORDER BY best_time ASC
 LIMIT 3;
 
--- Estatísticas: total de queimadas por jogador
 SELECT player_name, COUNT(*) as queimadas
 FROM race_results
 WHERE burned = 1
@@ -67,15 +57,3 @@ FROM race_results
 WHERE burned = 0
 ORDER BY date DESC, time ASC
 LIMIT 10;
-
--- Adiciona índice para citizenid (busca por jogador)
-CREATE INDEX idx_race_results_citizenid ON race_results (citizenid);
-
--- Adiciona índice para track (busca/agrupamento por pista)
-CREATE INDEX idx_race_results_track ON race_results (track);
-
--- Adiciona índice para date (busca por data, especialmente para conquistas semanais)
-CREATE INDEX idx_race_results_date ON race_results (date);
-
--- (Opcional) Índice composto para consultas que usam mais de uma coluna
-CREATE INDEX idx_race_results_citizenid_track_date ON race_results (citizenid, track, date);
