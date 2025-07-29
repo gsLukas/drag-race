@@ -6,7 +6,7 @@
 [![Licença](https://img.shields.io/github/license/seu-usuario/qb-drag?style=flat-square)]()
 [![Status](https://img.shields.io/badge/status-ativo-success?style=flat-square)]()
 
-> Recurso de corridas de arrancada (_drag race_) com sistema de XP e personalizações para servidores **QBCore**.
+> Recurso de corridas de arrancada (_drag racing_) com sistema de XP e personalizações para servidores **QBCore**.
 
 ---
 
