@@ -9,7 +9,6 @@ QBCore.Functions.CreateCallback('qb-drag-xp:getRegistered', function(source, cb)
     local registered = Player.PlayerData.metadata["registered"] or false
     cb(registered)
 end)
-local QBCore = exports['qb-core']:GetCoreObject()
 
 
 RegisterNetEvent("qb-drag-xp:setRegistered")
@@ -21,7 +20,6 @@ AddEventHandler("qb-drag-xp:setRegistered", function(isRegistered)
         Player.Functions.SetMetaData("registered", isRegistered)
     end
 end)
-local QBCore = exports['qb-core']:GetCoreObject()
 
 -- Função utilitária para garantir que o jogador existe
 local function GetPlayerData(src)
@@ -121,12 +119,18 @@ end)
 
 -- ✅ Função para pegar XP e nível do jogador
 QBCore.Functions.CreateCallback('qb-drag-xp:getXPData', function(source, cb)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = GetPlayerData(source)
     if not Player then
         cb(nil)
         return
     end
-    local xp = Player.PlayerData.metadata["dragxp"] or 0
-    local level = GetPlayerLevel(xp)
-    cb({ xp = xp, level = level })
+    local citizenid = Player.PlayerData.citizenid
+    exports['oxmysql']:execute('SELECT xp FROM qb_drag_xp WHERE citizenid = ?', {citizenid}, function(result)
+        local xp = 0
+        if result and result[1] and result[1].xp then
+            xp = tonumber(result[1].xp)
+        end
+        local level = GetPlayerLevel(xp)
+        cb({ xp = xp, level = level })
+    end)
 end)

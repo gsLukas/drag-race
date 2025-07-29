@@ -1,0 +1,32 @@
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node.js (caso use NUI com npm/yarn)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+.env
+
+# VSCode / IDEs
+.vscode/
+.idea/
+
+# Build/output temporários
+dist/
+build/
+*.log
+*.tmp
+*.cache
+
+# Arquivos específicos do FiveM
+.edito.txt
+*.dll
+*.exe
+*.so
+
+# Git
+.git/
