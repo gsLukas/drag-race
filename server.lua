@@ -1,6 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local activeDisputes = {}
 local activeTrainings = {}  -- [playerId] = true
+local lastResultTime = {}
 
 function GetPlayerLevel(xp)
     local level = 0
@@ -13,13 +14,26 @@ function GetPlayerLevel(xp)
 end
 
 function DarXP(playerId, tipoCorrida, venceu)
-    if tipoCorrida == "treino" then
-        
+    local Player = QBCore.Functions.GetPlayer(playerId)
+    if not Player then return end
+
+    local xp = Player.PlayerData.metadata["dragxp"] or 0
+    local add = 0
+
+    if tipoCorrida == "treino" and venceu then
+        add = Config.XP.Treino
     elseif tipoCorrida == "disputa" then
-        
         if venceu then
-            
+            add = Config.XP.VitoriaDisputa
+        else
+            add = Config.XP.Disputa
         end
+    end
+
+    if add > 0 then
+        xp = xp + add
+        Player.Functions.SetMetaData("dragxp", xp)
+        TriggerClientEvent('QBCore:Notify', playerId, ('Você ganhou %d XP de corrida!'):format(add), 'success')
     end
 end
 
@@ -87,8 +101,21 @@ end)
 -- Registrar o resultado da corrida no banco
 RegisterNetEvent('qb-race:logResult', function(data)
     local src = source
+    local now = os.time()
+    if lastResultTime[src] and now - lastResultTime[src] < 5 then
+        print("[qb-drag][ERRO] Flood de resultado do jogador:", src)
+        return
+    end
+    lastResultTime[src] = now
+
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
+
+    -- Validação extra
+    if not activeDisputes[src] and not activeTrainings[src] then
+        print("[qb-drag][ERRO] Jogador tentou registrar resultado sem estar em corrida:", src)
+        return
+    end
 
     local citizenid = Player.PlayerData.citizenid
     local charinfo = Player.PlayerData.charinfo
