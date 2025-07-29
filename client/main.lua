@@ -1,19 +1,13 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-
--- FiveM native vector3
 local vector3 = vector3
 local registered = false
-
 local xpHUD = nil
 local xpTimer = 0
-
 RegisterNetEvent('qb-drag-xp:showXP')
 AddEventHandler('qb-drag-xp:showXP', function(xp, level)
     xpHUD = { xp = xp, level = level }
     xpTimer = GetGameTimer() + 7000 -- Exibir por 7 segundos
 end)
-
--- Desenhar XP na telaSim,
 CreateThread(function()
     while true do
         if xpHUD and GetGameTimer() < xpTimer then
@@ -21,17 +15,15 @@ CreateThread(function()
             local nivelTxt = xpHUD.level == -1 and "—" or tostring(xpHUD.level)
             DrawText2D(("🏁 XP: %d | Nível: %s"):format(xpHUD.xp, nivelTxt), 0.85, 0.8, 0.6)
         else
-            Wait(500) -- Reduz o uso de CPU quando não há informações para exibir
+            Wait(500) -- Reduz o uso de CPU
         end
     end
 end)
-
 function DrawText2D(text, x, y, scale)
     SetTextFont(0)
     SetTextProportional(false)
     SetTextScale(scale, scale)
-    -- Otimização: calcula cor antes de desenhar
-    local color = {r = 255, g = 255, b = 255, a = 215} -- padrão (branco)
+    local color = {r = 255, g = 255, b = 255, a = 215}
     if xpHUD and xpHUD.level and xpHUD.level >= 1 then
         color = {r = 0, g = 255, b = 0, a = 215} -- verde
     elseif xpHUD and xpHUD.xp and xpHUD.xp >= 100 then
@@ -42,8 +34,6 @@ function DrawText2D(text, x, y, scale)
     AddTextComponentString(text)
     DrawText(x, y)
 end
-
--- Blip fixo no mapa
 CreateThread(function()
     local blip = AddBlipForCoord(Config.RegistroCorrida.x, Config.RegistroCorrida.y, Config.RegistroCorrida.z)
     SetBlipSprite(blip, 38)
@@ -54,8 +44,6 @@ CreateThread(function()
     AddTextComponentString("Registro Corrida")
     EndTextCommandSetBlipName(blip)
 end)
-
-
 CreateThread(function()
     while true do
         local sleep = 1000
@@ -83,19 +71,14 @@ CreateThread(function()
         Wait(sleep)
     end
 end)
-
 function IsPlayerRegistered()
     return registered
 end
-
--- Atualiza registro ao entrar no servidor
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.TriggerCallback("qb-drag-xp:getRegistered", function(result)
         registered = result
     end)
 end)
--- Funções utilitárias para XP
--- Função para verificar se o jogador está registrado e adicionar XP
 function CheckIfRegisteredAndAddXP(xpAmount)
     if registered then
         TriggerServerEvent('qb-drag-xp:addXP', xpAmount)
@@ -103,29 +86,22 @@ function CheckIfRegisteredAndAddXP(xpAmount)
         QBCore.Functions.Notify('Você precisa estar registrado para ganhar XP.', 'error')
     end
 end
-
 function AddXP_Treino()
     CheckIfRegisteredAndAddXP(Config.XP.Treino)
 end
-
 function AddXP_Disputa()
     CheckIfRegisteredAndAddXP(Config.XP.Disputa)
 end
-
 function AddXP_Vitoria()
     CheckIfRegisteredAndAddXP(Config.XP.VitoriaDisputa)
 end
-
--- Exports para uso externo
 exports("AddXP_Treino", AddXP_Treino)
 exports("AddXP_Disputa", AddXP_Disputa)
 exports("AddXP_Vitoria", AddXP_Vitoria)
 
 RegisterNetEvent('qb-race:showLeaderboard', function(list)
-    -- Exibe leaderboard visual via NUI (painel apenas, sem notificação)
     SendNUIMessage({
         leaderboard = true,
         data = list
     })
 end)
-
